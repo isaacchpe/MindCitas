@@ -165,7 +165,6 @@ La gestión del proyecto se realiza en Jira con tablero Kanban.
 |------------|-------------|
 | Isaac David Chávez Pérez | Product Owner |
 | Yasser Daniel Ariza Barrios | Scrum Master |
-| Alberto Pérez | Desarrollador |
 
 Los tres integrantes conforman el equipo de desarrollo. Los roles de PO y SM rotan en cada sprint.
 
