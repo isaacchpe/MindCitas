@@ -188,4 +188,32 @@ Con el backend corriendo, abrir `http://localhost:3000/api/docs` en el navegador
 | David Forero | Scrum Master |
 | Isaac Chavez | Desarrollador |
 
+<<<<<<< HEAD
 Los tres miembros participan en desarrollo.
+=======
+---
+
+## Equipo de desarrollo
+
+| Integrante | Rol Sprint 1 |
+|------------|-------------|
+| Isaac David Chávez Pérez | Product Owner |
+| Yasser Daniel Ariza Barrios | Scrum Master |
+
+Los tres integrantes conforman el equipo de desarrollo. Los roles de PO y SM rotan en cada sprint.
+
+---
+
+## Documentación adicional
+
+- Documento de formulación del proyecto (Actividad 1): disponible en la plataforma institucional.
+- Prototipo en Figma: [enlace pendiente]
+- Tablero Jira: [enlace pendiente]
+- Diagramas de arquitectura: ver carpeta `docs/`.
+
+---
+
+## Licencia
+
+Proyecto académico desarrollado para la asignatura Proyecto de Software, Corporación Universitaria Iberoamericana, 2026-1. Uso exclusivamente educativo.
+>>>>>>> 66db269bb3efa942b6ab49080261f99377019bff
