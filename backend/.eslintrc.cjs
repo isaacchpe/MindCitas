@@ -1,0 +1,24 @@
+module.exports = {
+  root: true,
+  env: {
+    node: true,
+    es2021: true,
+    jest: true,
+  },
+  extends: ['eslint:recommended', 'prettier'],
+  parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+  },
+  rules: {
+    'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+    'no-console': 'off',
+    semi: ['error', 'always'],
+    quotes: ['error', 'single'],
+    indent: ['error', 2],
+    'no-var': 'error',
+    'prefer-const': 'warn',
+    eqeqeq: ['error', 'always'],
+    curly: 'error',
+  },
+};

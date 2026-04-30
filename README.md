@@ -1,185 +1,191 @@
 # MindCitas
 
-## Plataforma Web de Bienestar Emocional para Jóvenes Universitarios
+MindCitas es una plataforma web responsiva de bienestar emocional dirigida a estudiantes universitarios colombianos. Permite registrar el estado emocional diario, visualizar tendencias semanales y acceder a un diario de reflexion personal. Proyecto desarrollado en la materia Proyecto de Software de la Corporacion Universitaria Iberoamericana, Sprint 2.
 
-MindCitas es una plataforma web desarrollada como proyecto del curso de Proyecto de Software de la Corporación Universitaria Iberoamericana, enmarcada en la **Línea 3: Mente Activa — Bienestar Mental y Hábitos Digitales**.
+## Stack
 
-El sistema busca mejorar el acceso de los estudiantes universitarios a servicios de bienestar emocional, integrando en una sola plataforma el agendamiento de sesiones de apoyo psicológico, un diario emocional con visualización de patrones de ánimo, un sistema de micro-hábitos con gamificación y un espacio de chat anónimo entre pares.
-
----
-
-## Problema que resuelve
-
-Los estudiantes universitarios colombianos enfrentan barreras significativas para acceder a servicios de salud mental institucional: listas de espera prolongadas, horarios limitados, ausencia de herramientas de seguimiento entre sesiones y falta de espacios digitales seguros para recibir apoyo. MindCitas propone una solución tecnológica que digitaliza y simplifica este proceso, permitiendo gestionar el bienestar emocional desde cualquier dispositivo con conexión a internet.
-
----
-
-## Funcionalidades principales
-
-- Agendamiento de sesiones de bienestar emocional (psicología, mindfulness, orientación académica, grupos de apoyo) con calendario visual y código de confirmación.
-- Diario emocional con registro diario del estado de ánimo en escala de 5 niveles, campo de reflexión opcional y gráficas de tendencia semanal y mensual.
-- Sistema de micro-hábitos con catálogo predefinido y personalizable, rachas por días consecutivos, insignias por logros alcanzados y tablero de progreso.
-- Chat anónimo entre pares en tiempo real con salas temáticas y alias anónimos generados automáticamente.
-- Autenticación con JWT y control de acceso basado en roles (estudiante, profesional de bienestar, administrador).
-
----
-
-## Stack tecnológico
-
-| Capa | Tecnologías |
-|------|-------------|
-| Backend | Node.js v20 LTS, Express.js, Mongoose |
-| Frontend | React 18, Vite, React Router, Zustand, Axios |
-| Base de datos | MongoDB Atlas |
-| Autenticación | JWT (jsonwebtoken), bcrypt |
-| Tiempo real | Socket.io |
-| Visualizaciones | Chart.js |
-| Calidad de código | ESLint, Prettier |
-| DevOps | Docker, docker-compose, GitHub Actions |
-| Despliegue | Render (backend), Vercel (frontend) |
-| Diseño | Figma |
-
----
+- Backend: Node.js 20, Express 4, Mongoose 8, MongoDB Atlas, JWT, bcrypt
+- Frontend: React 18, Vite 5, React Router 6, Zustand, Tailwind CSS 3, Chart.js
+- Calidad: ESLint 8, Prettier 3, Husky 9, lint-staged
+- Testing: Jest 29, Supertest
+- CI: GitHub Actions
 
 ## Estructura del proyecto
 
 ```
-mindcitas/
-+-- backend/
-|   +-- src/
-|   |   +-- config/          # Configuración de BD, variables de entorno
-|   |   +-- controllers/     # Controladores de cada módulo
-|   |   +-- middlewares/      # Auth JWT, validación, manejo de errores
-|   |   +-- models/           # Modelos Mongoose (User, Session, etc.)
-|   |   +-- routes/           # Definición de rutas de la API
-|   |   +-- services/         # Lógica de negocio
-|   |   +-- utils/            # Funciones auxiliares
-|   +-- tests/                # Pruebas unitarias e integración
-|   +-- .env.example
-|   +-- package.json
-|   +-- server.js
-+-- frontend/
-|   +-- src/
-|   |   +-- components/       # Componentes reutilizables de React
-|   |   +-- pages/            # Páginas principales
-|   |   +-- services/         # Consumo de API con Axios
-|   |   +-- context/          # Estado global (Zustand)
-|   |   +-- assets/           # Imágenes y recursos estáticos
-|   |   +-- styles/           # Estilos globales
-|   +-- index.html
-|   +-- package.json
-|   +-- vite.config.js
-+-- docs/
-|   +-- ADR-001-stack-tecnologico.md
-|   +-- ADR-002-base-de-datos.md
-|   +-- arquitectura-c4.md
-+-- .gitignore
-+-- .eslintrc.json
-+-- .prettierrc
-+-- README.md
+mindCitas/
+├── .github/workflows/ci.yml
+├── backend/
+│   ├── scripts/seed.js
+│   └── src/
+│       ├── app.js
+│       ├── server.js
+│       ├── config/          (env, db, logger)
+│       ├── middlewares/      (errorHandler, notFound, authMiddleware, validate)
+│       ├── utils/            (AppError, asyncHandler)
+│       ├── docs/             (swagger)
+│       └── modules/
+│           ├── auth/         (model, repository, service, controller, validators, routes)
+│           └── emotional-entries/
+├── frontend/
+│   └── src/
+│       ├── components/
+│       │   ├── layout/       (AppShell, AuthLayout, SideNav, BottomNav)
+│       │   └── ui/           (Button, TextField, FormCard, MoodButton, Toast, PatternBanner)
+│       ├── pages/
+│       │   ├── auth/         (Login, Register, ForgotPassword, ResetPassword)
+│       │   └── app/          (Dashboard, EmotionalDiary)
+│       ├── services/         (api, auth, emotional)
+│       ├── stores/           (auth, emotional, toast)
+│       ├── lib/              (cn, date, mood)
+│       └── styles/
+└── docs/
 ```
 
----
+## Sistema de diseno
 
-## Instalación y ejecución local
+### Colores
 
-### Prerrequisitos
+| Token | Hex | Uso |
+|-------|-----|-----|
+| brand-primary | #4A7C59 | Acciones principales, bienestar |
+| brand-emotional | #7C6DAF | Modulo de diario emocional |
+| brand-habits | #E6934A | Habitos y rachas |
+| text-primary | #2C3E50 | Texto principal |
+| text-secondary | #6B7B8C | Texto secundario, hints |
+| surface-bg | #F5F5F5 | Fondo de pagina |
+| surface-card | #FFFFFF | Fondo de tarjetas |
+| surface-border | #E1E5EA | Bordes y separadores |
+| feedback-error | #D9534F | Errores |
+| feedback-success | #4A7C59 | Confirmaciones |
+| mood-1 a mood-5 | #D9534F, #E6934A, #F0C808, #7CB342, #4A7C59 | Niveles de animo |
 
-- Node.js v20 o superior
-- npm v9 o superior
-- MongoDB (local o cuenta en MongoDB Atlas)
-- Git
+### Tipografia
 
-### Clonar el repositorio
+Familia: Inter (400, 500, 600, 700)
+
+| Nombre | Tamano | Peso | Line-height |
+|--------|--------|------|-------------|
+| display | 28px | 700 | 1.2 |
+| h1 | 24px | 700 | 1.25 |
+| h2 | 20px | 700 | 1.3 |
+| h3 | 16px | 600 | 1.4 |
+| body | 14px | 400 | 1.5 |
+| caption | 12px | 400 | 1.4 |
+
+## Variables de entorno
+
+### Backend (`backend/.env.example`)
+
+| Variable | Descripcion |
+|----------|-------------|
+| PORT | Puerto del servidor (default 3000) |
+| NODE_ENV | Entorno: development, production, test |
+| MONGODB_URI | URI de conexion a MongoDB |
+| JWT_ACCESS_SECRET | Secreto para access tokens |
+| JWT_REFRESH_SECRET | Secreto para refresh tokens |
+| JWT_ACCESS_EXPIRES | Duracion del access token (ej: 15m) |
+| JWT_REFRESH_EXPIRES | Duracion del refresh token (ej: 7d) |
+| CLIENT_URL | URL del frontend para CORS |
+
+### Frontend (`frontend/.env.example`)
+
+| Variable | Descripcion |
+|----------|-------------|
+| VITE_API_URL | URL base de la API incluyendo /api |
+
+## Scripts
+
+### Raiz
+
+- `npm run prepare` — instala hooks de Husky
+
+### Backend
+
+- `npm run dev` — servidor con nodemon
+- `npm start` — servidor en produccion
+- `npm test` — pruebas unitarias con Jest
+- `npm run seed` — crea usuario demo con datos de prueba
+- `npm run lint` / `lint:fix` — analisis y correccion con ESLint
+- `npm run format` — formateo con Prettier
+
+### Frontend
+
+- `npm run dev` — servidor de desarrollo Vite
+- `npm run build` — build de produccion
+- `npm run preview` — previsualizar build
+- `npm run lint` / `lint:fix` — analisis y correccion con ESLint
+- `npm run format` — formateo con Prettier
+
+## Como correr en local
+
+1. Clonar el repositorio:
 
 ```bash
-git clone https://github.com/[usuario]/mindcitas.git
-cd mindcitas
+git clone https://github.com/isaacchpe/MindCitas.git
+cd MindCitas
 ```
 
-### Configurar el backend
+2. Instalar dependencias de la raiz (Husky + lint-staged):
+
+```bash
+npm install
+```
+
+3. Configurar y levantar el backend:
 
 ```bash
 cd backend
 npm install
 cp .env.example .env
-# Editar .env con las credenciales de MongoDB y el secreto JWT
-npm start
 ```
 
-El servidor se levanta por defecto en `http://localhost:3000`.
-
-### Configurar el frontend
+Editar `backend/.env` con la URI de MongoDB Atlas o local y los secretos JWT.
 
 ```bash
-cd frontend
-npm install
 npm run dev
 ```
 
-La aplicación se levanta por defecto en `http://localhost:5173`.
+El servidor arranca en `http://localhost:3000`.
 
----
+4. (Opcional) Cargar datos de prueba:
 
-## Variables de entorno
-
-Crear un archivo `.env` en la carpeta `backend/` tomando como referencia `.env.example`:
-
-```
-PORT=3000
-MONGODB_URI=mongodb+srv://usuario:password@cluster.mongodb.net/mindcitas
-JWT_SECRET=clave_secreta_aqui
-JWT_EXPIRES_IN=30d
-NODE_ENV=development
+```bash
+npm run seed
 ```
 
----
+Crea el usuario `demo@mindcitas.local` con contrasena `Demo1234!` y 7 entradas emocionales.
 
-## Flujo de trabajo con Git
+5. Configurar y levantar el frontend:
 
-El proyecto utiliza Git Flow con las siguientes ramas:
+```bash
+cd ../frontend
+npm install
+cp .env.example .env
+npm run dev
+```
 
-- `main`: rama de producción. Solo recibe merges desde develop mediante Pull Request aprobado.
-- `develop`: rama de integración. Aquí se consolidan las funcionalidades completadas.
-- `feature/*`: ramas individuales para cada funcionalidad (ejemplo: `feature/agendamiento`, `feature/diario-emocional`).
+El frontend arranca en `http://localhost:5173`.
 
-Ninguna modificación se sube directamente a `main`. Todo pasa por Pull Request con revisión de al menos un integrante del equipo.
+## Swagger UI
 
----
+Con el backend corriendo, abrir `http://localhost:3000/api/docs` en el navegador para explorar la documentacion interactiva de la API.
 
-## Metodología
+## Verificacion rapida
 
-El proyecto se desarrolla bajo el marco de trabajo Scrum adaptado al contexto académico, con tres sprints correspondientes a los tres cortes del semestre:
+1. Iniciar el backend con `npm run dev` en `/backend`. Confirmar que `http://localhost:3000/api/docs` muestra la documentacion Swagger.
+2. Iniciar el frontend con `npm run dev` en `/frontend`. Ir a `http://localhost:5173/register` y registrar un usuario nuevo. Al completar el registro, el sistema redirige al dashboard.
+3. En el dashboard, seleccionar un nivel de animo. Confirmar que aparece el toast "Registro guardado" y que la grafica semanal se actualiza.
+4. Navegar a `/app/diario`. Editar el registro del dia: cambiar el mood y agregar una reflexion. Guardar.
+5. Cerrar sesion desde el menu del avatar. Volver a iniciar sesion con las credenciales registradas.
+6. Probar `/forgot-password` con el email registrado. En la consola del backend (en modo development) debe imprimirse el token de recuperacion.
 
-- Sprint 1 (Corte 1, 26 de marzo): formulación, prototipado, arquitectura y setup del proyecto.
-- Sprint 2 (Corte 2, 7 de mayo): desarrollo del núcleo funcional (API, base de datos, frontend, pruebas).
-- Sprint 3 (Corte 3, 4 de junio): despliegue a producción, CI/CD, documentación y presentación final.
+## Equipo Sprint 2
 
-La gestión del proyecto se realiza en Jira con tablero Kanban.
+| Nombre | Rol |
+|--------|-----|
+| Yasser Ariza | Product Owner |
+| David Forero | Scrum Master |
+| Isaac Chavez | Desarrollador |
 
----
-
-## Equipo de desarrollo
-
-| Integrante | Rol Sprint 1 |
-|------------|-------------|
-| Isaac David Chávez Pérez | Product Owner |
-| Yasser Daniel Ariza Barrios | Scrum Master |
-| Alberto Pérez | Desarrollador |
-
-Los tres integrantes conforman el equipo de desarrollo. Los roles de PO y SM rotan en cada sprint.
-
----
-
-## Documentación adicional
-
-- Documento de formulación del proyecto (Actividad 1): disponible en la plataforma institucional.
-- Prototipo en Figma: [enlace pendiente]
-- Tablero Jira: [enlace pendiente]
-- Diagramas de arquitectura: ver carpeta `docs/`.
-
----
-
-## Licencia
-
-Proyecto académico desarrollado para la asignatura Proyecto de Software, Corporación Universitaria Iberoamericana, 2026-1. Uso exclusivamente educativo.
+Los tres miembros participan en desarrollo.
