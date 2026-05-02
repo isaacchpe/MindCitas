@@ -11,19 +11,8 @@ import { notFound } from './middlewares/notFound.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import authRoutes from './modules/auth/auth.routes.js';
 import emotionalEntryRoutes from './modules/emotional-entries/emotional-entry.routes.js';
-import { connectDB } from './config/db.js';
 
 const app = express();
-
-// Middleware para asegurar conexión a DB en entornos serverless (Vercel)
-app.use(async (req, res, next) => {
-  try {
-    await connectDB();
-    next();
-  } catch (error) {
-    next(error);
-  }
-});
 
 app.use(helmet());
 app.use(cors({ origin: config.clientUrl, credentials: true }));
