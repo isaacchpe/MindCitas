@@ -96,7 +96,7 @@ Familia: Inter (400, 500, 600, 700)
 
 ## Scripts
 
-### Raiz
+### Raíz
 
 - `npm run prepare` — instala hooks de Husky
 
@@ -117,7 +117,7 @@ Familia: Inter (400, 500, 600, 700)
 - `npm run lint` / `lint:fix` — análisis y corrección con ESLint
 - `npm run format` — formateo con Prettier
 
-## Como correr en local
+## Cómo correr en local
 
 1. Clonar el repositorio:
 
@@ -126,7 +126,7 @@ git clone https://github.com/isaacchpe/MindCitas.git
 cd MindCitas
 ```
 
-2. Instalar dependencias de la raiz (Husky + lint-staged):
+2. Instalar dependencias de la raíz (Husky + lint-staged):
 
 ```bash
 npm install
@@ -169,9 +169,9 @@ El frontend arranca en `http://localhost:5173`.
 
 ## Swagger UI
 
-Con el backend corriendo, abrir `http://localhost:3000/api/docs` en el navegador para explorar la documentacion interactiva de la API.
+Con el backend corriendo, abrir `http://localhost:3000/api/docs` en el navegador para explorar la documentación interactiva de la API.
 
-## Verificacion rapida
+## Verificación rápida
 
 1. Iniciar el backend con `npm run dev` en `/backend`. Confirmar que `http://localhost:3000/api/docs` muestra la documentación Swagger.
 2. Iniciar el frontend con `npm run dev` en `/frontend`. Ir a `http://localhost:5173/register` y registrar un usuario nuevo. Al completar el registro, el sistema redirige al dashboard.
@@ -188,13 +188,18 @@ Con el backend corriendo, abrir `http://localhost:3000/api/docs` en el navegador
 | David Forero | Scrum Master  |
 | Isaac Chavez | Desarrollador |
 
+<<<<<<< HEAD
+Los tres miembros participan en desarrollo.
+=======
+
+---
+
 ## Equipo de desarrollo
 
 | Integrante                  | Rol Sprint 1  |
 | --------------------------- | ------------- |
 | Isaac David Chávez Pérez    | Product Owner |
 | Yasser Daniel Ariza Barrios | Scrum Master  |
-| David Santiago Forero López | Desarrollador |
 
 Los tres integrantes conforman el equipo de desarrollo. Los roles de PO y SM rotan en cada sprint.
 
@@ -203,9 +208,9 @@ Los tres integrantes conforman el equipo de desarrollo. Los roles de PO y SM rot
 ## Documentación adicional
 
 - Documento de formulación del proyecto (Actividad 1): disponible en la plataforma institucional.
-- Prototipo en Figma: [enlace pendiente]
-- Tablero Jira: [enlace pendiente]
-- Diagramas de arquitectura: ver carpeta `docs/`.
+- [Prototipo en Figma](https://www.figma.com/design/Uolf4sS9a5TvSVppiAypZX/MindCitas---Prototipo?node-id=2-69)
+- [Tablero Jira](https://mindcitas.atlassian.net/jira/software/projects/MIN/boards/2)
+- [Diagramas de arquitectura](docs/).
 
 ---
 
