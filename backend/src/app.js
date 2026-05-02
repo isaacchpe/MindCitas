@@ -29,7 +29,7 @@ const globalLimiter = rateLimit({
   max: 200,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { status: 'error', message: 'Demasiadas solicitudes, intenta de nuevo mas tarde' },
+  message: { status: 'error', message: 'Demasiadas solicitudes, intenta de nuevo más tarde' },
 });
 
 export const authLimiter = rateLimit({
@@ -39,7 +39,7 @@ export const authLimiter = rateLimit({
   legacyHeaders: false,
   message: {
     status: 'error',
-    message: 'Demasiados intentos de autenticacion, intenta de nuevo mas tarde',
+    message: 'Demasiados intentos de autenticación, intenta de nuevo más tarde',
   },
 });
 

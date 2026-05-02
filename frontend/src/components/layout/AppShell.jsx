@@ -24,8 +24,8 @@ export function AppShell() {
   const handleLogout = async () => {
     try {
       await authService.logout();
-    } catch (_e) {
-      /* noop */
+    } catch {
+      // noop
     }
     clearSession();
     navigate('/login');

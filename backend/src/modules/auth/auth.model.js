@@ -16,23 +16,21 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
       unique: true,
-      match: [/^\S+@\S+\.\S+$/, 'El email no es valido'],
+      match: [/^\S+@\S+\.\S+$/, 'El email no es válido'],
     },
     password: {
       type: String,
-      required: [true, 'La contrasena es obligatoria'],
-      minlength: [8, 'La contrasena debe tener al menos 8 caracteres'],
+      required: [true, 'La contraseña es obligatoria'],
+      minlength: [8, 'La contraseña debe tener al menos 8 caracteres'],
       select: false,
     },
     academicProgram: {
       type: String,
-      maxlength: [120, 'El programa academico no puede exceder 120 caracteres'],
+      maxlength: [120, 'El programa académico no puede exceder 120 caracteres'],
     },
   },
   { timestamps: true }
 );
-
-userSchema.index({ email: 1 }, { unique: true });
 
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {

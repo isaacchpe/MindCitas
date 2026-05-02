@@ -24,8 +24,8 @@ api.interceptors.response.use(
       const { refreshToken } = useAuthStore.getState();
       if (!refreshToken) {
         useAuthStore.getState().clearSession();
-        window.location.href = '/login';
-        return Promise.reject(error);
+        globalThis.location.href = '/login';
+        throw error;
       }
 
       try {
@@ -37,14 +37,15 @@ api.interceptors.response.use(
         useAuthStore.setState({ accessToken: newToken });
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
         return api(originalRequest);
-      } catch (_refreshError) {
+      } catch (refreshError) {
+        console.error('Fallo al renovar token:', refreshError);
         useAuthStore.getState().clearSession();
-        window.location.href = '/login';
-        return Promise.reject(error);
+        globalThis.location.href = '/login';
+        throw error;
       }
     }
 
-    return Promise.reject(error);
+    throw error;
   }
 );
 

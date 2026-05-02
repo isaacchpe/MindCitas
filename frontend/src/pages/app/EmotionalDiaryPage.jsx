@@ -76,8 +76,8 @@ export default function EmotionalDiaryPage() {
         setNote(data.data.note || '');
         setIsExisting(true);
       }
-    } catch (_e) {
-      /* first time, no entry */
+    } catch (err) {
+      console.error('Error al obtener registro de hoy:', err);
     } finally {
       setLoadingPage(false);
     }
@@ -87,16 +87,19 @@ export default function EmotionalDiaryPage() {
     try {
       const { data } = await emotionalService.getRecentEntries(7);
       setRecentEntries(data.data || []);
-    } catch (_e) {
-      /* noop */
+    } catch (err) {
+      console.error('Error al obtener registros recientes:', err);
     } finally {
       setLoadingRecent(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchToday();
-    fetchRecent();
+    const initialize = async () => {
+      await fetchToday();
+      await fetchRecent();
+    };
+    initialize();
   }, [fetchToday, fetchRecent]);
 
   const handleSubmit = async () => {
@@ -113,11 +116,40 @@ export default function EmotionalDiaryPage() {
       setIsExisting(true);
       toast('success', 'Registro guardado correctamente');
       fetchRecent();
-    } catch (_e) {
+    } catch (err) {
+      console.error('Error al guardar registro emocional:', err);
       toast('error', 'No se pudo guardar el registro');
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const renderRecentContent = () => {
+    if (loadingRecent) {
+      return (
+        <div className="space-y-3">
+          {[1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-12" />
+          ))}
+        </div>
+      );
+    }
+
+    if (recentEntries.length === 0) {
+      return (
+        <p className="text-body text-text-secondary py-4">
+          Aún no tienes registros. Empieza por registrar cómo te sientes hoy.
+        </p>
+      );
+    }
+
+    return (
+      <div className="divide-y divide-surface-border">
+        {recentEntries.map((entry) => (
+          <RecentEntry key={entry._id || entry.date} entry={entry} />
+        ))}
+      </div>
+    );
   };
 
   const noteOverLimit = note.length > 500;
@@ -133,9 +165,9 @@ export default function EmotionalDiaryPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2 flex flex-col gap-4">
           <Card>
-            <h3 className="text-h3 text-text-primary mb-1">Como te sientes hoy?</h3>
+            <h3 className="text-h3 text-text-primary mb-1">¿Cómo te sientes hoy?</h3>
             <p className="text-body text-text-secondary mb-4">
-              Selecciona el nivel que mejor describa tu estado de animo.
+              Selecciona el nivel que mejor describa tu estado de ánimo.
             </p>
             {loadingPage ? (
               <div className="flex justify-between">
@@ -159,7 +191,7 @@ export default function EmotionalDiaryPage() {
           </Card>
 
           <Card>
-            <h3 className="text-h3 text-text-primary mb-1">Reflexion del dia</h3>
+            <h3 className="text-h3 text-text-primary mb-1">Reflexión del día</h3>
             <p className="text-caption text-text-secondary mb-3">
               Opcional. Escribe lo que quieras compartir contigo mismo.
             </p>
@@ -174,7 +206,7 @@ export default function EmotionalDiaryPage() {
                   ? 'border-feedback-error focus:ring-feedback-error'
                   : 'border-surface-border focus:ring-brand-primary focus:border-brand-primary'
               )}
-              placeholder="Como estuvo tu dia?"
+              placeholder="¿Cómo estuvo tu día?"
               maxLength={600}
             />
             <p
@@ -201,23 +233,7 @@ export default function EmotionalDiaryPage() {
         <div className="lg:col-span-1">
           <Card>
             <h3 className="text-h3 text-text-primary mb-3">Registros recientes</h3>
-            {loadingRecent ? (
-              <div className="space-y-3">
-                {[1, 2, 3].map((i) => (
-                  <Skeleton key={i} className="h-12" />
-                ))}
-              </div>
-            ) : recentEntries.length === 0 ? (
-              <p className="text-body text-text-secondary py-4">
-                Aun no tienes registros. Empieza por registrar como te sientes hoy.
-              </p>
-            ) : (
-              <div className="divide-y divide-surface-border">
-                {recentEntries.map((entry) => (
-                  <RecentEntry key={entry._id || entry.date} entry={entry} />
-                ))}
-              </div>
-            )}
+            {renderRecentContent()}
           </Card>
         </div>
       </div>

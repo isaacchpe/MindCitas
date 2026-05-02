@@ -5,7 +5,7 @@ import { cn } from '../lib/cn';
 const SLIDES = [
   {
     bg: 'bg-brand-primary',
-    title: 'Bienvenido a MindCitas',
+    title: '¡Bienvenido a MindCitas!',
     subtitle: 'Tu bienestar emocional, en tus manos',
     circle: 'bg-white/10',
     innerCircle: 'bg-white/20',
@@ -13,7 +13,7 @@ const SLIDES = [
   },
   {
     bg: 'bg-brand-emotional',
-    title: 'Agenda tus sesiones',
+    title: '¡Agenda tus sesiones!',
     subtitle: 'Conecta con profesionales de la salud mental',
     circle: 'bg-white/10',
     innerCircle: 'bg-white/15',
@@ -21,7 +21,7 @@ const SLIDES = [
   },
   {
     bg: 'bg-brand-habits',
-    title: 'Registra tu estado emocional',
+    title: '¡Registra tu estado emocional!',
     subtitle: 'Lleva un diario de tu bienestar diario',
     circle: 'bg-white/10',
     innerCircle: 'bg-white/15',
@@ -60,9 +60,9 @@ export default function OnboardingPage() {
         <p className="text-body text-white/80 mt-3 max-w-xs">{slide.subtitle}</p>
 
         <div className="flex gap-2 mt-8">
-          {SLIDES.map((_, i) => (
+          {SLIDES.map((slide, i) => (
             <div
-              key={i}
+              key={slide.title}
               className={cn(
                 'w-2 h-2 rounded-full transition-colors duration-200',
                 i === current ? 'bg-white' : 'bg-white/40'

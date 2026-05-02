@@ -21,7 +21,7 @@ export class AuthService {
   async register({ name, email, password, academicProgram }) {
     const existing = await this.userRepository.findByEmail(email);
     if (existing) {
-      throw new AppError('El email ya esta registrado', 409);
+      throw new AppError('El email ya está registrado', 409);
     }
 
     const user = await this.userRepository.create({ name, email, password, academicProgram });
@@ -33,12 +33,12 @@ export class AuthService {
   async login({ email, password }) {
     const user = await this.userRepository.findByEmail(email, true);
     if (!user) {
-      throw new AppError('Credenciales invalidas', 401);
+      throw new AppError('Credenciales inválidas', 401);
     }
 
     const valid = await user.comparePassword(password);
     if (!valid) {
-      throw new AppError('Credenciales invalidas', 401);
+      throw new AppError('Credenciales inválidas', 401);
     }
 
     const { accessToken, refreshToken } = this.signTokens(user._id);
@@ -59,7 +59,7 @@ export class AuthService {
   }
 
   logout() {
-    return { message: 'Sesion cerrada' };
+    return { message: 'Sesión cerrada' };
   }
 
   async forgotPassword({ email }) {
@@ -73,7 +73,7 @@ export class AuthService {
     });
 
     if (config.nodeEnv === 'development') {
-      logger.info(`Token de recuperacion para ${email}: ${resetToken}`);
+      logger.info(`Token de recuperación para ${email}: ${resetToken}`);
     }
 
     return { resetToken };
@@ -83,9 +83,9 @@ export class AuthService {
     const decoded = jwt.verify(token, config.jwt.accessSecret);
     const user = await this.userRepository.updateById(decoded.id, { password: newPassword });
     if (!user) {
-      throw new AppError('Token invalido o usuario no encontrado', 400);
+      throw new AppError('Token inválido o usuario no encontrado', 400);
     }
 
-    return { message: 'Contrasena actualizada' };
+    return { message: 'Contraseña actualizada' };
   }
 }

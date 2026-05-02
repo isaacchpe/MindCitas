@@ -6,7 +6,7 @@ const ITEMS = [
   { icon: Home, label: 'Inicio', to: '/app/dashboard', enabled: true },
   { icon: Calendar, label: 'Sesiones', to: null, enabled: false },
   { icon: BookHeart, label: 'Diario', to: '/app/diario', enabled: true },
-  { icon: Target, label: 'Habitos', to: null, enabled: false },
+  { icon: Target, label: 'Hábitos', to: null, enabled: false },
   { icon: MessageCircle, label: 'Chat', to: null, enabled: false },
 ];
 
@@ -20,7 +20,7 @@ export function BottomNav() {
             <div
               key={item.label}
               className="flex flex-col items-center gap-0.5 text-text-secondary cursor-not-allowed"
-              title="Proximamente"
+              title="Próximamente"
             >
               <Icon className="h-6 w-6" />
               <span className="text-caption">{item.label}</span>

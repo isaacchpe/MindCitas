@@ -4,14 +4,14 @@ import { Button } from './Button';
 export function PatternBanner() {
   return (
     <div className="bg-brand-emotional/10 border-l-[3px] border-brand-emotional p-5 rounded-lg">
-      <h3 className="text-h3 text-text-primary">Quieres hablar con alguien?</h3>
+      <h3 className="text-h3 text-text-primary">¿Quieres hablar con alguien?</h3>
       <p className="text-body text-text-secondary mt-2">
-        Hemos notado que has tenido dias dificiles esta semana. Considera agendar una sesion con un
+        Hemos notado que has tenido días difíciles esta semana. Considera agendar una sesión con un
         profesional.
       </p>
-      <div className="mt-3" title="Proximamente">
+      <div className="mt-3" title="Próximamente">
         <Button variant="secondary" size="sm" disabled>
-          Agendar sesion
+          Agendar sesión
         </Button>
       </div>
     </div>

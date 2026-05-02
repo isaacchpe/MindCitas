@@ -15,7 +15,7 @@ const options = {
       },
     ],
     tags: [
-      { name: 'Auth', description: 'Autenticacion y gestion de usuarios' },
+      { name: 'Auth', description: 'Autenticación y gestión de usuarios' },
       { name: 'EmotionalEntries', description: 'Registro diario de estado emocional' },
     ],
     components: {

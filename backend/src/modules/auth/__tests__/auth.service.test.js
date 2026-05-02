@@ -33,23 +33,23 @@ describe('AuthService', () => {
 
       await expect(
         service.register({ name: 'Test', email: 'test@test.com', password: '12345678' })
-      ).rejects.toThrow('El email ya esta registrado');
+      ).rejects.toThrow('El email ya está registrado');
     });
   });
 
   describe('login', () => {
-    it('lanza error con credenciales invalidas', async () => {
+    it('lanza error con credenciales inválidas', async () => {
       mockRepo.findByEmail = async () => ({
         ...TEST_USER,
         comparePassword: async () => false,
       });
 
       await expect(service.login({ email: 'test@test.com', password: 'wrong' })).rejects.toThrow(
-        'Credenciales invalidas'
+        'Credenciales inválidas'
       );
     });
 
-    it('retorna tokens con credenciales validas', async () => {
+    it('retorna tokens con credenciales válidas', async () => {
       mockRepo.findByEmail = async () => TEST_USER;
 
       const result = await service.login({ email: 'test@test.com', password: 'password123' });
@@ -75,7 +75,7 @@ describe('AuthService', () => {
   });
 
   describe('resetPassword', () => {
-    it('actualiza la password si el token es valido', async () => {
+    it('actualiza la password si el token es válido', async () => {
       const token = jwt.sign({ id: 'user123' }, process.env.JWT_ACCESS_SECRET, {
         expiresIn: '15m',
       });
@@ -83,7 +83,7 @@ describe('AuthService', () => {
 
       const result = await service.resetPassword({ token, newPassword: 'newpass123' });
 
-      expect(result).toHaveProperty('message', 'Contrasena actualizada');
+      expect(result).toHaveProperty('message', 'Contraseña actualizada');
     });
   });
 });

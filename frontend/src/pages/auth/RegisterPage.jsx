@@ -12,36 +12,40 @@ import { useToastStore } from '../../stores/toast.store';
 const EMAIL_RE = /^\S+@\S+\.\S+$/;
 
 function validateField(name, value, form) {
-  if (name === 'name') {
-    if (!value) {
-      return 'El nombre es obligatorio';
-    }
+  switch (name) {
+    case 'name':
+      return value ? '' : 'El nombre es obligatorio';
+
+    case 'email':
+      if (!value) {
+        return 'El correo es obligatorio';
+      }
+      if (!EMAIL_RE.test(value)) {
+        return 'El correo no es válido';
+      }
+      return '';
+
+    case 'password':
+      if (!value) {
+        return 'La contraseña es obligatoria';
+      }
+      if (value.length < 8) {
+        return 'Mínimo 8 caracteres';
+      }
+      return '';
+
+    case 'passwordConfirm':
+      if (!value) {
+        return 'Confirma tu contraseña';
+      }
+      if (value !== form.password) {
+        return 'Las contraseñas no coinciden';
+      }
+      return '';
+
+    default:
+      return '';
   }
-  if (name === 'email') {
-    if (!value) {
-      return 'El correo es obligatorio';
-    }
-    if (!EMAIL_RE.test(value)) {
-      return 'El correo no es valido';
-    }
-  }
-  if (name === 'password') {
-    if (!value) {
-      return 'La contrasena es obligatoria';
-    }
-    if (value.length < 8) {
-      return 'Minimo 8 caracteres';
-    }
-  }
-  if (name === 'passwordConfirm') {
-    if (!value) {
-      return 'Confirma tu contrasena';
-    }
-    if (value !== form.password) {
-      return 'Las contrasenas no coinciden';
-    }
-  }
-  return '';
 }
 
 export default function RegisterPage() {
@@ -85,7 +89,7 @@ export default function RegisterPage() {
       }
     }
     if (!terms) {
-      errs.terms = 'Debes aceptar los terminos y condiciones';
+      errs.terms = 'Debes aceptar los términos y condiciones';
     }
     if (Object.keys(errs).length) {
       setErrors(errs);
@@ -121,13 +125,13 @@ export default function RegisterPage() {
             value={form.name}
             onChange={handleChange}
             onBlur={handleBlur}
-            placeholder="Juan Garcia"
+            placeholder="Juan García"
             autoComplete="name"
             error={errors.name}
             required
           />
           <TextField
-            label="Correo electronico"
+            label="Correo electrónico"
             name="email"
             type="email"
             value={form.email}
@@ -140,24 +144,24 @@ export default function RegisterPage() {
             required
           />
           <TextField
-            label="Contrasena"
+            label="Contraseña"
             name="password"
             type="password"
             value={form.password}
             onChange={handleChange}
             onBlur={handleBlur}
-            placeholder="Min. 8 caracteres"
+            placeholder="Mín. 8 caracteres"
             error={errors.password}
             required
           />
           <TextField
-            label="Confirmar contrasena"
+            label="Confirmar contraseña"
             name="passwordConfirm"
             type="password"
             value={form.passwordConfirm}
             onChange={handleChange}
             onBlur={handleBlur}
-            placeholder="Repite tu contrasena"
+            placeholder="Repite tu contraseña"
             error={errors.passwordConfirm}
             required
           />
@@ -173,16 +177,16 @@ export default function RegisterPage() {
               }}
               className="w-4 h-4 rounded border-surface-border text-brand-primary focus:ring-brand-primary"
             />
-            <span className="text-body text-text-secondary">Acepto los terminos y condiciones</span>
+            <span className="text-body text-text-secondary">Acepto los términos y condiciones</span>
           </label>
           {errors.terms && <p className="-mt-2 text-caption text-feedback-error">{errors.terms}</p>}
           <Button type="submit" fullWidth loading={loading}>
             Crear cuenta
           </Button>
           <p className="text-center text-caption text-text-secondary">
-            Ya tienes cuenta?{' '}
+            ¿Ya tienes cuenta?{' '}
             <Button variant="ghost" size="sm" onClick={() => navigate('/login')}>
-              Inicia sesion
+              Inicia sesión
             </Button>
           </p>
         </form>

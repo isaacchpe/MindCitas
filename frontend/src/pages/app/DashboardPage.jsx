@@ -87,7 +87,8 @@ export default function DashboardPage() {
       setErrorToday('');
       const { data } = await emotionalService.getByDate(getTodayISO());
       setTodayEntry(data.data);
-    } catch (_e) {
+    } catch (err) {
+      console.error('Error al cargar registro de hoy:', err);
       setErrorToday('No se pudo cargar el registro de hoy');
     } finally {
       setLoadingToday(false);
@@ -99,7 +100,8 @@ export default function DashboardPage() {
       setErrorTrend('');
       const { data } = await emotionalService.getWeeklyTrend();
       setTrend(data.data);
-    } catch (_e) {
+    } catch (err) {
+      console.error('Error al cargar tendencia semanal:', err);
       setErrorTrend('No se pudo cargar la tendencia semanal');
     } finally {
       setLoadingTrend(false);
@@ -107,8 +109,11 @@ export default function DashboardPage() {
   }, []);
 
   useEffect(() => {
-    fetchToday();
-    fetchTrend();
+    const initialize = async () => {
+      await fetchToday();
+      await fetchTrend();
+    };
+    initialize();
   }, [fetchToday, fetchTrend]);
 
   const handleMoodClick = async (mood) => {
@@ -118,7 +123,8 @@ export default function DashboardPage() {
       setTodayEntry(data.data);
       toast('success', 'Registro guardado');
       fetchTrend();
-    } catch (_e) {
+    } catch (err) {
+      console.error('Error al guardar registro emocional:', err);
       toast('error', 'No se pudo guardar el registro');
     } finally {
       setSubmitting(false);
@@ -164,6 +170,83 @@ export default function DashboardPage() {
     },
   };
 
+  const renderTodayContent = () => {
+    if (loadingToday) {
+      return (
+        <div className="space-y-3">
+          <Skeleton className="h-4 w-2/3" />
+          <div className="flex justify-between">
+            {MOOD_LIST.map((m) => (
+              <Skeleton key={m} className="w-14 h-14 rounded-full" />
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    if (errorToday) {
+      return <p className="text-caption text-feedback-error">{errorToday}</p>;
+    }
+
+    if (todayEntry) {
+      return (
+        <div className="flex flex-col items-center gap-3 py-2">
+          <MoodButton mood={todayEntry.mood} selected />
+          {todayEntry.note && (
+            <p className="text-body text-text-secondary italic text-center">
+              &ldquo;{todayEntry.note}&rdquo;
+            </p>
+          )}
+          <Button variant="secondary" size="sm" onClick={() => navigate('/app/diario')}>
+            Editar registro
+          </Button>
+        </div>
+      );
+    }
+
+    return (
+      <>
+        <p className="text-body text-text-secondary mb-4">
+          Toca un nivel para registrar tu emoción del día.
+        </p>
+        <div className="flex justify-between">
+          {MOOD_LIST.map((mood) => (
+            <MoodButton
+              key={mood}
+              mood={mood}
+              onClick={() => handleMoodClick(mood)}
+              disabled={submitting}
+            />
+          ))}
+        </div>
+      </>
+    );
+  };
+
+  const renderTrendContent = () => {
+    if (loadingTrend) {
+      return <Skeleton className="h-48" />;
+    }
+
+    if (errorTrend) {
+      return <p className="text-caption text-feedback-error">{errorTrend}</p>;
+    }
+
+    if (!hasData) {
+      return (
+        <p className="text-caption text-text-secondary py-8 text-center">
+          Aún no hay registros suficientes para mostrar tu tendencia.
+        </p>
+      );
+    }
+
+    return (
+      <div className="h-48">
+        <Line data={chartData} options={chartOptions} />
+      </div>
+    );
+  };
+
   return (
     <div className="flex flex-col gap-4 py-4 lg:py-0">
       <section>
@@ -172,81 +255,30 @@ export default function DashboardPage() {
       </section>
 
       <Card>
-        <h3 className="text-h3 text-text-primary mb-3">Como te sientes hoy?</h3>
-        {loadingToday ? (
-          <div className="space-y-3">
-            <Skeleton className="h-4 w-2/3" />
-            <div className="flex justify-between">
-              {MOOD_LIST.map((m) => (
-                <Skeleton key={m} className="w-14 h-14 rounded-full" />
-              ))}
-            </div>
-          </div>
-        ) : errorToday ? (
-          <p className="text-caption text-feedback-error">{errorToday}</p>
-        ) : todayEntry ? (
-          <div className="flex flex-col items-center gap-3 py-2">
-            <MoodButton mood={todayEntry.mood} selected />
-            {todayEntry.note && (
-              <p className="text-body text-text-secondary italic text-center">
-                &ldquo;{todayEntry.note}&rdquo;
-              </p>
-            )}
-            <Button variant="secondary" size="sm" onClick={() => navigate('/app/diario')}>
-              Editar registro
-            </Button>
-          </div>
-        ) : (
-          <>
-            <p className="text-body text-text-secondary mb-4">
-              Toca un nivel para registrar tu emocion del dia.
-            </p>
-            <div className="flex justify-between">
-              {MOOD_LIST.map((mood) => (
-                <MoodButton
-                  key={mood}
-                  mood={mood}
-                  onClick={() => handleMoodClick(mood)}
-                  disabled={submitting}
-                />
-              ))}
-            </div>
-          </>
-        )}
+        <h3 className="text-h3 text-text-primary mb-3">¿Cómo te sientes hoy?</h3>
+        {renderTodayContent()}
       </Card>
 
       <Card>
         <h3 className="text-h3 text-text-primary">Tu semana emocional</h3>
-        <p className="text-caption text-text-secondary mb-4">Ultimos 7 dias</p>
-        {loadingTrend ? (
-          <Skeleton className="h-48" />
-        ) : errorTrend ? (
-          <p className="text-caption text-feedback-error">{errorTrend}</p>
-        ) : !hasData ? (
-          <p className="text-caption text-text-secondary py-8 text-center">
-            Aun no hay registros suficientes para mostrar tu tendencia.
-          </p>
-        ) : (
-          <div className="h-48">
-            <Line data={chartData} options={chartOptions} />
-          </div>
-        )}
+        <p className="text-caption text-text-secondary mb-4">Últimos 7 días</p>
+        {renderTrendContent()}
       </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
-          <h3 className="text-h3 text-text-primary">Proxima sesion</h3>
-          <p className="text-caption text-text-secondary mt-1">Disponible en proximas entregas</p>
+          <h3 className="text-h3 text-text-primary">Próxima sesión</h3>
+          <p className="text-caption text-text-secondary mt-1">Disponible en próximas entregas</p>
           <p className="text-body text-text-secondary mt-3">
-            El modulo de agendamiento se habilitara en el siguiente sprint.
+            El módulo de agendamiento se habilitará en el siguiente sprint.
           </p>
         </Card>
 
         <Card>
-          <h3 className="text-h3 text-text-primary">Mis habitos de hoy</h3>
-          <p className="text-caption text-text-secondary mt-1">Disponible en proximas entregas</p>
+          <h3 className="text-h3 text-text-primary">Mis hábitos de hoy</h3>
+          <p className="text-caption text-text-secondary mt-1">Disponible en próximas entregas</p>
           <p className="text-body text-text-secondary mt-3">
-            El modulo de habitos se habilitara en el siguiente sprint.
+            El módulo de hábitos se habilitará en el siguiente sprint.
           </p>
         </Card>
       </div>

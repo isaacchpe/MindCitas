@@ -7,7 +7,7 @@ const ITEMS = [
   { icon: Home, label: 'Inicio', to: '/app/dashboard', enabled: true },
   { icon: Calendar, label: 'Sesiones', to: null, enabled: false },
   { icon: BookHeart, label: 'Diario', to: '/app/diario', enabled: true },
-  { icon: Target, label: 'Habitos', to: null, enabled: false },
+  { icon: Target, label: 'Hábitos', to: null, enabled: false },
   { icon: MessageCircle, label: 'Chat', to: null, enabled: false },
 ];
 
@@ -33,7 +33,7 @@ export function SideNav({ user, onLogout }) {
               <div
                 key={item.label}
                 className="flex items-center gap-3 px-5 py-3 text-text-secondary cursor-not-allowed rounded-md"
-                title="Proximamente"
+                title="Próximamente"
               >
                 <Icon className="h-5 w-5" />
                 <span className="text-body">{item.label}</span>
@@ -76,7 +76,7 @@ export function SideNav({ user, onLogout }) {
           onClick={onLogout}
           className="mt-3 text-caption font-semibold text-brand-primary hover:underline"
         >
-          Cerrar sesion
+          Cerrar sesión
         </button>
       </div>
     </aside>

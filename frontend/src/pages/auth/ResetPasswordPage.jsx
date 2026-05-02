@@ -13,7 +13,7 @@ function validateField(name, value, form) {
       return 'La contraseña es obligatoria';
     }
     if (value.length < 8) {
-      return 'Minimo 8 caracteres';
+      return 'Mínimo 8 caracteres';
     }
   }
   if (name === 'passwordConfirm') {
@@ -40,13 +40,13 @@ export default function ResetPasswordPage() {
   if (!token) {
     return (
       <AuthLayout
-        title="Enlace invalido"
-        subtitle="El enlace de recuperacion no es valido o ha expirado"
+        title="Enlace inválido"
+        subtitle="El enlace de recuperación no es válido o ha expirado"
       >
         <FormCard>
           <div className="flex flex-col gap-4">
             <p className="text-body text-text-secondary">
-              Solicita un nuevo enlace de recuperacion para restablecer tu contraseña.
+              Solicita un nuevo enlace de recuperación para restablecer tu contraseña.
             </p>
             <Button fullWidth onClick={() => navigate('/forgot-password')}>
               Solicitar nuevo enlace
@@ -110,7 +110,7 @@ export default function ResetPasswordPage() {
             value={form.newPassword}
             onChange={handleChange}
             onBlur={handleBlur}
-            hint={errors.newPassword ? undefined : 'Minimo 8 caracteres'}
+            hint={errors.newPassword ? undefined : 'Mínimo 8 caracteres'}
             error={errors.newPassword}
             required
           />

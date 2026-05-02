@@ -59,7 +59,7 @@ export function TextField({
             onClick={() => setShowPassword((prev) => !prev)}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary"
             tabIndex={-1}
-            aria-label={showPassword ? 'Ocultar contrasena' : 'Mostrar contrasena'}
+            aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
           >
             {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
           </button>
