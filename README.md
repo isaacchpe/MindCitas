@@ -188,22 +188,15 @@ Con el backend corriendo, abrir `http://localhost:3000/api/docs` en el navegador
 | David Forero | Scrum Master  |
 | Isaac Chavez | Desarrollador |
 
-<<<<<<< HEAD
-Los tres miembros participan en desarrollo.
-=======
-
----
-
 ## Equipo de desarrollo
 
 | Integrante                  | Rol Sprint 1  |
 | --------------------------- | ------------- |
 | Isaac David Chávez Pérez    | Product Owner |
 | Yasser Daniel Ariza Barrios | Scrum Master  |
+| David Santiago Forero López | Desarrollador  |
 
 Los tres integrantes conforman el equipo de desarrollo. Los roles de PO y SM rotan en cada sprint.
-
----
 
 ## Documentación adicional
 
@@ -211,8 +204,6 @@ Los tres integrantes conforman el equipo de desarrollo. Los roles de PO y SM rot
 - [Prototipo en Figma](https://www.figma.com/design/Uolf4sS9a5TvSVppiAypZX/MindCitas---Prototipo?node-id=2-69)
 - [Tablero Jira](https://mindcitas.atlassian.net/jira/software/projects/MIN/boards/2)
 - [Diagramas de arquitectura](docs/).
-
----
 
 ## Licencia
 
