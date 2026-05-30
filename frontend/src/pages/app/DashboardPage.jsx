@@ -1,24 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Tooltip,
-} from 'chart.js';
-import { Line } from 'react-chartjs-2';
 import { useAuthStore } from '../../stores/auth.store';
 import { useToastStore } from '../../stores/toast.store';
 import { emotionalService } from '../../services/emotional.service';
-import { formatDateLong, formatDateShort, getDayShort, getTodayISO } from '../../lib/date';
-import { MOODS, MOOD_LIST } from '../../lib/mood';
+import { formatDateLong, getTodayISO } from '../../lib/date';
+import { MOOD_LIST } from '../../lib/mood';
 import { MoodButton } from '../../components/ui/MoodButton';
 import { Button } from '../../components/ui/Button';
-
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip);
+import { EmotionalAlert } from '../../components/dashboard/EmotionalAlert';
+import { TrendChart } from '../../components/dashboard/TrendChart';
+import { ExportButton } from '../../components/dashboard/ExportButton';
 
 function Skeleton({ className = '' }) {
   return <div className={`animate-pulse bg-surface-border rounded-md ${className}`} />;
@@ -32,42 +24,6 @@ function Card({ children, className = '' }) {
 }
 Card.propTypes = { children: PropTypes.node.isRequired, className: PropTypes.string };
 
-const CHART_OPTIONS = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: { display: false },
-    tooltip: {
-      backgroundColor: '#2C3E50',
-      titleFont: { size: 12 },
-      bodyFont: { size: 12 },
-      padding: 8,
-      cornerRadius: 6,
-    },
-  },
-  scales: {
-    y: {
-      min: 1,
-      max: 5,
-      ticks: {
-        stepSize: 1,
-        font: { size: 11 },
-        color: '#6B7B8C',
-      },
-      grid: { display: false },
-      border: { display: false },
-    },
-    x: {
-      ticks: {
-        font: { size: 11 },
-        color: '#6B7B8C',
-      },
-      grid: { display: false },
-      border: { color: '#E1E5EA' },
-    },
-  },
-};
-
 export default function DashboardPage() {
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
@@ -75,11 +31,8 @@ export default function DashboardPage() {
   const firstName = user?.name?.split(' ')[0] || '';
 
   const [todayEntry, setTodayEntry] = useState(null);
-  const [trend, setTrend] = useState([]);
   const [loadingToday, setLoadingToday] = useState(true);
-  const [loadingTrend, setLoadingTrend] = useState(true);
   const [errorToday, setErrorToday] = useState('');
-  const [errorTrend, setErrorTrend] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   const fetchToday = useCallback(async () => {
@@ -94,22 +47,9 @@ export default function DashboardPage() {
     }
   }, []);
 
-  const fetchTrend = useCallback(async () => {
-    try {
-      setErrorTrend('');
-      const { data } = await emotionalService.getWeeklyTrend();
-      setTrend(data.data);
-    } catch (_e) {
-      setErrorTrend('No se pudo cargar la tendencia semanal');
-    } finally {
-      setLoadingTrend(false);
-    }
-  }, []);
-
   useEffect(() => {
     fetchToday();
-    fetchTrend();
-  }, [fetchToday, fetchTrend]);
+  }, [fetchToday]);
 
   const handleMoodClick = async (mood) => {
     setSubmitting(true);
@@ -117,7 +57,6 @@ export default function DashboardPage() {
       const { data } = await emotionalService.createEntry({ mood });
       setTodayEntry(data.data);
       toast('success', 'Registro guardado');
-      fetchTrend();
     } catch (_e) {
       toast('error', 'No se pudo guardar el registro');
     } finally {
@@ -127,49 +66,14 @@ export default function DashboardPage() {
 
   const todayLabel = formatDateLong(new Date());
 
-  const hasData = trend.some((t) => t.mood !== null);
-  const chartData = {
-    labels: trend.map((t) => getDayShort(t.date)),
-    datasets: [
-      {
-        data: trend.map((t) => t.mood),
-        borderColor: '#4A7C59',
-        backgroundColor: '#4A7C59',
-        borderWidth: 2,
-        pointRadius: 6,
-        pointHoverRadius: 8,
-        pointBackgroundColor: '#4A7C59',
-        tension: 0,
-        spanGaps: false,
-      },
-    ],
-  };
-
-  const chartOptions = {
-    ...CHART_OPTIONS,
-    plugins: {
-      ...CHART_OPTIONS.plugins,
-      tooltip: {
-        ...CHART_OPTIONS.plugins.tooltip,
-        callbacks: {
-          title: (items) => {
-            const idx = items[0]?.dataIndex;
-            return idx !== null && idx !== undefined && trend[idx]
-              ? formatDateShort(trend[idx].date)
-              : '';
-          },
-          label: (ctx) => MOODS[ctx.raw]?.label || '',
-        },
-      },
-    },
-  };
-
   return (
     <div className="flex flex-col gap-4 py-4 lg:py-0">
       <section>
         <h1 className="text-h2 lg:text-h1 text-text-primary">Hola, {firstName}</h1>
         <p className="text-caption text-text-secondary mt-1">{todayLabel}</p>
       </section>
+
+      <EmotionalAlert />
 
       <Card>
         <h3 className="text-h3 text-text-primary mb-3">Como te sientes hoy?</h3>
@@ -216,38 +120,40 @@ export default function DashboardPage() {
       </Card>
 
       <Card>
-        <h3 className="text-h3 text-text-primary">Tu semana emocional</h3>
-        <p className="text-caption text-text-secondary mb-4">Ultimos 7 dias</p>
-        {loadingTrend ? (
-          <Skeleton className="h-48" />
-        ) : errorTrend ? (
-          <p className="text-caption text-feedback-error">{errorTrend}</p>
-        ) : !hasData ? (
-          <p className="text-caption text-text-secondary py-8 text-center">
-            Aun no hay registros suficientes para mostrar tu tendencia.
-          </p>
-        ) : (
-          <div className="h-48">
-            <Line data={chartData} options={chartOptions} />
+        <div className="flex items-start gap-2">
+          <div className="flex-1">
+            <TrendChart />
           </div>
-        )}
+          <ExportButton />
+        </div>
       </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
-          <h3 className="text-h3 text-text-primary">Proxima sesion</h3>
-          <p className="text-caption text-text-secondary mt-1">Disponible en proximas entregas</p>
-          <p className="text-body text-text-secondary mt-3">
-            El modulo de agendamiento se habilitara en el siguiente sprint.
+          <h3 className="text-h3 text-text-primary">Sesiones</h3>
+          <p className="text-body text-text-secondary mt-2">
+            Consulta tus sesiones o agenda una nueva.
           </p>
+          <div className="flex gap-2 mt-3">
+            <Button size="sm" onClick={() => navigate('/app/sesiones')}>
+              Ver sesiones
+            </Button>
+            <Button size="sm" variant="secondary" onClick={() => navigate('/app/agendar')}>
+              Agendar
+            </Button>
+          </div>
         </Card>
 
         <Card>
-          <h3 className="text-h3 text-text-primary">Mis habitos de hoy</h3>
-          <p className="text-caption text-text-secondary mt-1">Disponible en proximas entregas</p>
-          <p className="text-body text-text-secondary mt-3">
-            El modulo de habitos se habilitara en el siguiente sprint.
+          <h3 className="text-h3 text-text-primary">Mis habitos</h3>
+          <p className="text-body text-text-secondary mt-2">
+            Registra tus habitos del dia y mantiene tu racha.
           </p>
+          <div className="mt-3">
+            <Button size="sm" onClick={() => navigate('/app/habitos')}>
+              Ver habitos
+            </Button>
+          </div>
         </Card>
       </div>
     </div>

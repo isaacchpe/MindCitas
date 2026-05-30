@@ -23,4 +23,8 @@ export class EmotionalEntryRepository {
   async findRecent({ userId, limit }) {
     return EmotionalEntry.find({ userId }).sort({ date: -1 }).limit(limit);
   }
+
+  async findAllByUser(userId) {
+    return EmotionalEntry.find({ userId }).sort({ date: 1 });
+  }
 }

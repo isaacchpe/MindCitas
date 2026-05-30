@@ -77,6 +77,21 @@ async function seed() {
   }
   console.log('7 entradas emocionales creadas');
 
+  if (process.env.NODE_ENV !== 'production') {
+    const adminPassword = await bcrypt.hash('Admin1234!', 12);
+    const admin = await User.findOneAndUpdate(
+      { email: 'admin@mindcitas.local' },
+      {
+        name: 'Administrador',
+        email: 'admin@mindcitas.local',
+        password: adminPassword,
+        role: 'admin',
+      },
+      { upsert: true, new: true }
+    );
+    console.log(`Admin: ${admin.email} (${admin._id})`);
+  }
+
   await mongoose.disconnect();
   console.log('Seed completado');
 }

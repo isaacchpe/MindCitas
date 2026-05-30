@@ -11,6 +11,12 @@ import { notFound } from './middlewares/notFound.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import authRoutes from './modules/auth/auth.routes.js';
 import emotionalEntryRoutes from './modules/emotional-entries/emotional-entry.routes.js';
+import userRoutes from './modules/users/users.routes.js';
+import habitRoutes from './modules/habits/habits.routes.js';
+import badgeRoutes from './modules/habits/badges.routes.js';
+import sessionRoutes from './modules/sessions/sessions.routes.js';
+import adminRoutes from './modules/admin/admin.routes.js';
+import healthRoutes from './modules/health/health.routes.js';
 
 const app = express();
 
@@ -46,6 +52,12 @@ export const authLimiter = rateLimit({
 const apiRouter = express.Router();
 apiRouter.use('/auth', authRoutes);
 apiRouter.use('/emotional-entries', emotionalEntryRoutes);
+apiRouter.use('/users', userRoutes);
+apiRouter.use('/habits', habitRoutes);
+apiRouter.use('/badges', badgeRoutes);
+apiRouter.use('/sessions', sessionRoutes);
+apiRouter.use('/admin', adminRoutes);
+apiRouter.use('/health', healthRoutes);
 
 app.use('/api', globalLimiter, apiRouter);
 app.use(

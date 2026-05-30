@@ -28,6 +28,15 @@ const userSchema = new mongoose.Schema(
       type: String,
       maxlength: [120, 'El programa academico no puede exceder 120 caracteres'],
     },
+    role: {
+      type: String,
+      enum: ['student', 'professional', 'admin'],
+      default: 'student',
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true }
 );

@@ -160,4 +160,93 @@ router.get('/weekly-trend', controller.weeklyTrend);
  */
 router.get('/recent', recentValidator, validate, controller.recent);
 
+/**
+ * @swagger
+ * /emotional-entries/monthly-trend:
+ *   get:
+ *     tags: [EmotionalEntries]
+ *     summary: Tendencia emocional de los ultimos 30 dias
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Array de 30 puntos ordenados cronologicamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: ok
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       date:
+ *                         type: string
+ *                         format: date
+ *                       moodLevel:
+ *                         type: integer
+ *                         nullable: true
+ *                         minimum: 1
+ *                         maximum: 5
+ *       401:
+ *         description: No autenticado
+ */
+router.get('/monthly-trend', controller.monthlyTrend);
+
+/**
+ * @swagger
+ * /emotional-entries/export-csv:
+ *   get:
+ *     tags: [EmotionalEntries]
+ *     summary: Exporta todos los registros del usuario en formato CSV
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Archivo CSV
+ *         content:
+ *           text/csv:
+ *             schema:
+ *               type: string
+ *       401:
+ *         description: No autenticado
+ */
+router.get('/export-csv', controller.exportCsv);
+
+/**
+ * @swagger
+ * /emotional-entries/check-alert:
+ *   get:
+ *     tags: [EmotionalEntries]
+ *     summary: Verifica si hay patron negativo en los ultimos registros
+ *     description: Retorna alerta si los ultimos 3 dias consecutivos tienen mood <= 2
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Resultado de la verificacion
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: ok
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     alert:
+ *                       type: boolean
+ *                     suggestion:
+ *                       type: string
+ *       401:
+ *         description: No autenticado
+ */
+router.get('/check-alert', controller.checkAlert);
+
 export default router;

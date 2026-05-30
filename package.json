@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "prepare": "husky"
+    "prepare": "husky",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:ci": "playwright test --reporter=github"
   },
   "lint-staged": {
     "backend/**/*.js": [
@@ -16,6 +19,7 @@
     ]
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",

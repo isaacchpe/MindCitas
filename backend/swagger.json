@@ -1,0 +1,2121 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "MindCitas API",
+    "version": "1.0.0",
+    "description": "API REST de la plataforma de bienestar emocional MindCitas para estudiantes universitarios colombianos"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api",
+      "description": "Desarrollo local"
+    },
+    {
+      "url": "https://mindcitas-api.onrender.com/api",
+      "description": "Produccion (Render)"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Autenticacion y gestion de credenciales"
+    },
+    {
+      "name": "Users",
+      "description": "Perfil de usuario e insignias"
+    },
+    {
+      "name": "EmotionalEntries",
+      "description": "Registro diario de estado emocional"
+    },
+    {
+      "name": "Habits",
+      "description": "Micro-habitos, rachas e insignias"
+    },
+    {
+      "name": "Sessions",
+      "description": "Agendamiento de sesiones de apoyo"
+    },
+    {
+      "name": "Admin",
+      "description": "Administracion de la plataforma"
+    },
+    {
+      "name": "Badges",
+      "description": "Catalogo de insignias"
+    },
+    {
+      "name": "Health",
+      "description": "Estado del servicio"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "academicProgram": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "student",
+              "professional",
+              "admin"
+            ]
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "UserProfile": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "program": {
+            "type": "string",
+            "nullable": true
+          },
+          "role": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "ok"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "user": {
+                "$ref": "#/components/schemas/User"
+              },
+              "accessToken": {
+                "type": "string"
+              },
+              "refreshToken": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "EmotionalEntry": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "mood": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "note": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "WeeklyTrendItem": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "mood": {
+            "type": "integer",
+            "nullable": true
+          },
+          "note": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "Habit": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "habitType": {
+            "type": "string",
+            "enum": [
+              "meditation",
+              "exercise",
+              "reading",
+              "hydration",
+              "sleep",
+              "custom"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "frequency": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "HabitSummary": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "habitType": {
+            "type": "string"
+          },
+          "currentStreak": {
+            "type": "integer"
+          },
+          "bestStreak": {
+            "type": "integer"
+          },
+          "completedToday": {
+            "type": "boolean"
+          }
+        }
+      },
+      "HabitLog": {
+        "type": "object",
+        "properties": {
+          "habitId": {
+            "type": "string"
+          },
+          "weekStart": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "entries": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "dayOfWeek": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 6
+                },
+                "completedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          },
+          "currentStreak": {
+            "type": "integer"
+          },
+          "bestStreak": {
+            "type": "integer"
+          }
+        }
+      },
+      "Badge": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "threshold": {
+            "type": "integer"
+          }
+        }
+      },
+      "UserBadge": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "badgeId": {
+            "$ref": "#/components/schemas/Badge"
+          },
+          "habitId": {
+            "type": "string"
+          },
+          "awardedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Professional": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "specialty": {
+            "type": "string",
+            "enum": [
+              "psychology",
+              "mindfulness",
+              "academic",
+              "group"
+            ]
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SessionType": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "durationMinutes": {
+            "type": "integer"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "Session": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "userSnapshot": {
+            "type": "object",
+            "properties": {
+              "fullName": {
+                "type": "string"
+              },
+              "program": {
+                "type": "string"
+              }
+            }
+          },
+          "professionalId": {
+            "$ref": "#/components/schemas/Professional"
+          },
+          "sessionType": {
+            "type": "string"
+          },
+          "scheduledAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "scheduled",
+              "completed",
+              "canceled",
+              "no_show"
+            ]
+          },
+          "confirmationCode": {
+            "type": "string",
+            "example": "MC-A1B2C3"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "error"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "ValidationError": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "error"
+          },
+          "message": {
+            "type": "string",
+            "example": "El nombre es obligatorio, El email no es valido"
+          }
+        }
+      }
+    }
+  },
+  "security": [],
+  "paths": {
+    "/admin/users": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Lista usuarios registrados (paginado)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "pageSize",
+            "schema": {
+              "type": "integer",
+              "default": 20
+            }
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filtro por email o nombre"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista paginada de usuarios",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/User"
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        },
+                        "page": {
+                          "type": "integer"
+                        },
+                        "pageSize": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado"
+          },
+          "403": {
+            "description": "No es administrador"
+          }
+        }
+      }
+    },
+    "/admin/users/{id}": {
+      "patch": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Activa o desactiva un usuario",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "isActive"
+                ],
+                "properties": {
+                  "isActive": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Usuario actualizado"
+          },
+          "400": {
+            "description": "No puedes desactivar tu propia cuenta"
+          },
+          "403": {
+            "description": "No es administrador"
+          }
+        }
+      }
+    },
+    "/admin/stats": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Metricas generales de la plataforma",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Estadisticas de la plataforma",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "totalUsers": {
+                          "type": "integer"
+                        },
+                        "activeUsers": {
+                          "type": "integer"
+                        },
+                        "totalSessions": {
+                          "type": "integer"
+                        },
+                        "sessionsLast7Days": {
+                          "type": "integer"
+                        },
+                        "totalEmotionalEntries": {
+                          "type": "integer"
+                        },
+                        "entriesLast7Days": {
+                          "type": "integer"
+                        },
+                        "totalHabits": {
+                          "type": "integer"
+                        },
+                        "completedTodayCount": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "No es administrador"
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Registra un nuevo usuario",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Juan Perez"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "juan@universidad.edu.co"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password123"
+                  },
+                  "academicProgram": {
+                    "type": "string",
+                    "example": "Ingenieria de Sistemas"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuario registrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error de validacion"
+          },
+          "409": {
+            "description": "Email ya registrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Inicia sesion",
+        "description": "Rate limit de 10 solicitudes por 15 minutos por IP",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "juan@universidad.edu.co"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sesion iniciada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciales invalidas"
+          },
+          "429": {
+            "description": "Demasiados intentos"
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Renueva el access token usando un refresh token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "refreshToken"
+                ],
+                "properties": {
+                  "refreshToken": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Nuevo access token generado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "accessToken": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Refresh token invalido o expirado"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Cierra la sesion del usuario",
+        "responses": {
+          "200": {
+            "description": "Sesion cerrada"
+          }
+        }
+      }
+    },
+    "/auth/forgot-password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Solicita un token de recuperacion de contrasena",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "juan@universidad.edu.co"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Token de recuperacion generado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "resetToken": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Email no registrado"
+          }
+        }
+      }
+    },
+    "/auth/reset-password": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Restablece la contrasena con un token valido",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "token",
+                  "newPassword"
+                ],
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  },
+                  "newPassword": {
+                    "type": "string",
+                    "example": "nuevaPassword123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contrasena actualizada"
+          },
+          "400": {
+            "description": "Token invalido o usuario no encontrado"
+          }
+        }
+      }
+    },
+    "/emotional-entries": {
+      "post": {
+        "tags": [
+          "EmotionalEntries"
+        ],
+        "summary": "Registra o actualiza el estado emocional del dia",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "mood"
+                ],
+                "properties": {
+                  "mood": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 5,
+                    "example": 4
+                  },
+                  "note": {
+                    "type": "string",
+                    "example": "Buen dia en general"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Registro creado o actualizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/EmotionalEntry"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error de validacion"
+          },
+          "401": {
+            "description": "No autenticado"
+          }
+        }
+      }
+    },
+    "/emotional-entries/by-date/{date}": {
+      "get": {
+        "tags": [
+          "EmotionalEntries"
+        ],
+        "summary": "Obtiene el registro de un dia especifico",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "date",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2026-04-27"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Registro del dia o null si no existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/EmotionalEntry"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado"
+          }
+        }
+      }
+    },
+    "/emotional-entries/weekly-trend": {
+      "get": {
+        "tags": [
+          "EmotionalEntries"
+        ],
+        "summary": "Tendencia emocional de los ultimos 7 dias",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array de 7 elementos ordenados cronologicamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/WeeklyTrendItem"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado"
+          }
+        }
+      }
+    },
+    "/emotional-entries/recent": {
+      "get": {
+        "tags": [
+          "EmotionalEntries"
+        ],
+        "summary": "Obtiene los registros mas recientes",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "default": 7,
+              "minimum": 1,
+              "maximum": 30
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de registros recientes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/EmotionalEntry"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado"
+          }
+        }
+      }
+    },
+    "/emotional-entries/monthly-trend": {
+      "get": {
+        "tags": [
+          "EmotionalEntries"
+        ],
+        "summary": "Tendencia emocional de los ultimos 30 dias",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array de 30 puntos ordenados cronologicamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "date": {
+                            "type": "string",
+                            "format": "date"
+                          },
+                          "moodLevel": {
+                            "type": "integer",
+                            "nullable": true,
+                            "minimum": 1,
+                            "maximum": 5
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado"
+          }
+        }
+      }
+    },
+    "/emotional-entries/export-csv": {
+      "get": {
+        "tags": [
+          "EmotionalEntries"
+        ],
+        "summary": "Exporta todos los registros del usuario en formato CSV",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Archivo CSV",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado"
+          }
+        }
+      }
+    },
+    "/emotional-entries/check-alert": {
+      "get": {
+        "tags": [
+          "EmotionalEntries"
+        ],
+        "summary": "Verifica si hay patron negativo en los ultimos registros",
+        "description": "Retorna alerta si los ultimos 3 dias consecutivos tienen mood <= 2",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultado de la verificacion",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "alert": {
+                          "type": "boolean"
+                        },
+                        "suggestion": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado"
+          }
+        }
+      }
+    },
+    "/badges": {
+      "get": {
+        "tags": [
+          "Badges"
+        ],
+        "summary": "Catalogo completo de insignias",
+        "responses": {
+          "200": {
+            "description": "Lista de insignias disponibles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Badge"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/habits/predefined": {
+      "get": {
+        "tags": [
+          "Habits"
+        ],
+        "summary": "Catalogo de habitos predefinidos",
+        "responses": {
+          "200": {
+            "description": "Lista de habitos predefinidos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "habitType": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/habits": {
+      "post": {
+        "tags": [
+          "Habits"
+        ],
+        "summary": "Crea un nuevo habito para el usuario",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "habitType"
+                ],
+                "properties": {
+                  "habitType": {
+                    "type": "string",
+                    "enum": [
+                      "meditation",
+                      "exercise",
+                      "reading",
+                      "hydration",
+                      "sleep",
+                      "custom"
+                    ]
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "Meditacion matutina"
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Habito creado"
+          },
+          "400": {
+            "description": "Error de validacion"
+          },
+          "401": {
+            "description": "No autenticado"
+          }
+        }
+      }
+    },
+    "/habits/mine": {
+      "get": {
+        "tags": [
+          "Habits"
+        ],
+        "summary": "Lista los habitos activos del usuario",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de habitos con estado de racha",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/HabitSummary"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado"
+          }
+        }
+      }
+    },
+    "/habits/{id}/streak": {
+      "get": {
+        "tags": [
+          "Habits"
+        ],
+        "summary": "Detalle de racha de un habito",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalle de racha",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "currentStreak": {
+                          "type": "integer"
+                        },
+                        "bestStreak": {
+                          "type": "integer"
+                        },
+                        "completedDates": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "format": "date"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado"
+          },
+          "403": {
+            "description": "No tienes acceso a este habito"
+          },
+          "404": {
+            "description": "Habito no encontrado"
+          }
+        }
+      }
+    },
+    "/habits/{id}/check": {
+      "post": {
+        "tags": [
+          "Habits"
+        ],
+        "summary": "Marca el habito como completado hoy",
+        "description": "Idempotente. Si ya fue marcado hoy, retorna el mismo estado.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultado del check",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "currentStreak": {
+                          "type": "integer"
+                        },
+                        "bestStreak": {
+                          "type": "integer"
+                        },
+                        "awardedBadge": {
+                          "type": "object",
+                          "nullable": true
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado"
+          },
+          "403": {
+            "description": "No tienes acceso a este habito"
+          }
+        }
+      }
+    },
+    "/habits/{id}": {
+      "delete": {
+        "tags": [
+          "Habits"
+        ],
+        "summary": "Desactiva un habito (soft delete)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Habito desactivado"
+          },
+          "401": {
+            "description": "No autenticado"
+          },
+          "403": {
+            "description": "No tienes acceso a este habito"
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Estado del servicio",
+        "description": "Endpoint de health check usado por Render para verificar disponibilidad",
+        "responses": {
+          "200": {
+            "description": "Servicio disponible",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "uptime": {
+                      "type": "number"
+                    },
+                    "dbStatus": {
+                      "type": "string",
+                      "enum": [
+                        "connected",
+                        "disconnected"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sessions/types": {
+      "get": {
+        "tags": [
+          "Sessions"
+        ],
+        "summary": "Catalogo de tipos de sesion",
+        "responses": {
+          "200": {
+            "description": "Lista de tipos disponibles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SessionType"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sessions/available-slots": {
+      "get": {
+        "tags": [
+          "Sessions"
+        ],
+        "summary": "Slots disponibles para una fecha y tipo de sesion",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "date",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "example": "2026-06-02"
+          },
+          {
+            "in": "query",
+            "name": "sessionType",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "psychology",
+                "mindfulness",
+                "academic",
+                "group"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Slots por profesional",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "professionalId": {
+                            "type": "string"
+                          },
+                          "professionalName": {
+                            "type": "string"
+                          },
+                          "slots": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado"
+          }
+        }
+      }
+    },
+    "/sessions": {
+      "post": {
+        "tags": [
+          "Sessions"
+        ],
+        "summary": "Agenda una nueva sesion",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "professionalId",
+                  "sessionType",
+                  "scheduledAt"
+                ],
+                "properties": {
+                  "professionalId": {
+                    "type": "string"
+                  },
+                  "sessionType": {
+                    "type": "string",
+                    "enum": [
+                      "psychology",
+                      "mindfulness",
+                      "academic",
+                      "group"
+                    ]
+                  },
+                  "scheduledAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Sesion creada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Session"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error de validacion"
+          },
+          "409": {
+            "description": "Slot ya reservado"
+          }
+        }
+      }
+    },
+    "/sessions/mine": {
+      "get": {
+        "tags": [
+          "Sessions"
+        ],
+        "summary": "Historial de sesiones del usuario",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "scheduled",
+                "completed",
+                "canceled",
+                "no_show",
+                "all"
+              ],
+              "default": "all"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de sesiones"
+          },
+          "401": {
+            "description": "No autenticado"
+          }
+        }
+      }
+    },
+    "/sessions/{id}": {
+      "get": {
+        "tags": [
+          "Sessions"
+        ],
+        "summary": "Detalle de una sesion",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalle de la sesion"
+          },
+          "401": {
+            "description": "No autenticado"
+          },
+          "403": {
+            "description": "No tienes acceso a esta sesion"
+          },
+          "404": {
+            "description": "Sesion no encontrada"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Sessions"
+        ],
+        "summary": "Reprograma una sesion",
+        "description": "Solo si la sesion esta agendada y a mas de 24h en el futuro",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "scheduledAt"
+                ],
+                "properties": {
+                  "scheduledAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sesion reprogramada"
+          },
+          "400": {
+            "description": "No se puede reprogramar"
+          },
+          "409": {
+            "description": "Nuevo horario ya reservado"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Sessions"
+        ],
+        "summary": "Cancela una sesion",
+        "description": "Solo si la sesion esta agendada y a mas de 24h en el futuro",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sesion cancelada"
+          },
+          "400": {
+            "description": "No se puede cancelar"
+          },
+          "403": {
+            "description": "No tienes acceso a esta sesion"
+          }
+        }
+      }
+    },
+    "/users/me": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Obtiene el perfil del usuario autenticado",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Perfil del usuario",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/UserProfile"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado"
+          },
+          "404": {
+            "description": "Usuario no encontrado"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Actualiza el perfil del usuario autenticado",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fullName": {
+                    "type": "string",
+                    "example": "Juan Garcia Lopez"
+                  },
+                  "program": {
+                    "type": "string",
+                    "example": "Ingenieria de Software"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Perfil actualizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/UserProfile"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error de validacion"
+          },
+          "401": {
+            "description": "No autenticado"
+          }
+        }
+      }
+    },
+    "/users/me/badges": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Obtiene las insignias del usuario autenticado",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de insignias",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No autenticado"
+          }
+        }
+      }
+    }
+  }
+}

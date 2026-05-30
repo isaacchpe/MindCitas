@@ -8,6 +8,10 @@ import ResetPasswordPage from './pages/auth/ResetPasswordPage';
 import { AppShell } from './components/layout/AppShell';
 import DashboardPage from './pages/app/DashboardPage';
 import EmotionalDiaryPage from './pages/app/EmotionalDiaryPage';
+import HabitsPage from './pages/app/HabitsPage';
+import BadgesPage from './pages/app/BadgesPage';
+import BookingPage from './pages/app/BookingPage';
+import MySessionsPage from './pages/app/MySessionsPage';
 
 function PrivateRoute() {
   const accessToken = useAuthStore((s) => s.accessToken);
@@ -44,6 +48,10 @@ export function AppRouter() {
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="diario" element={<EmotionalDiaryPage />} />
+            <Route path="habitos" element={<HabitsPage />} />
+            <Route path="insignias" element={<BadgesPage />} />
+            <Route path="sesiones" element={<MySessionsPage />} />
+            <Route path="agendar" element={<BookingPage />} />
           </Route>
         </Route>
         <Route path="*" element={<RootRedirect />} />

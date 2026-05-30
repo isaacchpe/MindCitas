@@ -11,6 +11,6 @@ export const authMiddleware = (req, _res, next) => {
 
   const token = header.split(' ')[1];
   const decoded = jwt.verify(token, config.jwt.accessSecret);
-  req.user = { id: decoded.id };
+  req.user = { id: decoded.id, role: decoded.role || 'student' };
   next();
 };

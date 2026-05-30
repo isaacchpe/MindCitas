@@ -1,13 +1,14 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Calendar, BookHeart, Target, MessageCircle } from 'lucide-react';
+import { Home, Calendar, BookHeart, Target, MessageCircle, Award } from 'lucide-react';
 import PropTypes from 'prop-types';
 import { cn } from '../../lib/cn';
 
 const ITEMS = [
   { icon: Home, label: 'Inicio', to: '/app/dashboard', enabled: true },
-  { icon: Calendar, label: 'Sesiones', to: null, enabled: false },
+  { icon: Calendar, label: 'Sesiones', to: '/app/sesiones', enabled: true },
   { icon: BookHeart, label: 'Diario', to: '/app/diario', enabled: true },
-  { icon: Target, label: 'Habitos', to: null, enabled: false },
+  { icon: Target, label: 'Habitos', to: '/app/habitos', enabled: true },
+  { icon: Award, label: 'Insignias', to: '/app/insignias', enabled: true },
   { icon: MessageCircle, label: 'Chat', to: null, enabled: false },
 ];
 

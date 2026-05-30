@@ -6,6 +6,7 @@ const createMockRepo = () => ({
   findRange: async () => [],
   findRecent: async ({ limit }) =>
     Array.from({ length: limit }, () => ({ date: new Date(), mood: 3, note: null })),
+  findAllByUser: async () => [],
 });
 
 describe('EmotionalEntryService', () => {
@@ -76,6 +77,104 @@ describe('EmotionalEntryService', () => {
 
       expect(capturedLimit).toBe(5);
       expect(result).toHaveLength(5);
+    });
+  });
+
+  describe('getMonthlyTrend', () => {
+    it('retorna 30 puntos con null para dias sin registro', async () => {
+      const today = new Date();
+      today.setUTCHours(0, 0, 0, 0);
+      mockRepo.findRange = async () => [{ date: new Date(today), mood: 3, note: null }];
+
+      const trend = await service.getMonthlyTrend({ userId: 'u1' });
+
+      expect(trend).toHaveLength(30);
+      const withData = trend.filter((t) => t.moodLevel !== null);
+      expect(withData).toHaveLength(1);
+      expect(withData[0].moodLevel).toBe(3);
+      expect(trend.filter((t) => t.moodLevel === null)).toHaveLength(29);
+    });
+  });
+
+  describe('exportCsv', () => {
+    it('genera header correcto y respeta el orden cronologico', async () => {
+      const d1 = new Date('2026-05-01T00:00:00Z');
+      const d2 = new Date('2026-05-02T00:00:00Z');
+      mockRepo.findAllByUser = async () => [
+        { date: d1, mood: 3, note: 'dia uno' },
+        { date: d2, mood: 4, note: 'dia dos' },
+      ];
+
+      const csv = await service.exportCsv({ userId: 'u1' });
+      const lines = csv.split('\n');
+
+      expect(lines[0]).toBe('date,mood_level,reflection');
+      expect(lines[1]).toContain('2026-05-01');
+      expect(lines[2]).toContain('2026-05-02');
+    });
+
+    it('escapa comillas dobles en reflexiones', async () => {
+      mockRepo.findAllByUser = async () => [
+        { date: new Date('2026-05-01T00:00:00Z'), mood: 2, note: 'dijo "hola"' },
+      ];
+
+      const csv = await service.exportCsv({ userId: 'u1' });
+
+      expect(csv).toContain('""hola""');
+    });
+
+    it('envuelve en comillas dobles las reflexiones con comas', async () => {
+      mockRepo.findAllByUser = async () => [
+        { date: new Date('2026-05-01T00:00:00Z'), mood: 4, note: 'bien, tranquilo' },
+      ];
+
+      const csv = await service.exportCsv({ userId: 'u1' });
+      const dataLine = csv.split('\n')[1];
+
+      expect(dataLine).toContain('"bien, tranquilo"');
+    });
+  });
+
+  describe('checkAlert', () => {
+    it('retorna alert:true con 3 dias consecutivos en niveles 1-2', async () => {
+      const today = new Date();
+      today.setUTCHours(0, 0, 0, 0);
+      const d1 = new Date(today);
+      const d2 = new Date(today);
+      d2.setUTCDate(d2.getUTCDate() - 1);
+      const d3 = new Date(today);
+      d3.setUTCDate(d3.getUTCDate() - 2);
+
+      mockRepo.findRecent = async () => [
+        { date: d1, mood: 1, note: null },
+        { date: d2, mood: 2, note: null },
+        { date: d3, mood: 1, note: null },
+      ];
+
+      const result = await service.checkAlert({ userId: 'u1' });
+
+      expect(result.alert).toBe(true);
+      expect(result.suggestion).toBeDefined();
+    });
+
+    it('retorna alert:false si hay un hueco en los dias', async () => {
+      const today = new Date();
+      today.setUTCHours(0, 0, 0, 0);
+      const d1 = new Date(today);
+      const d2 = new Date(today);
+      d2.setUTCDate(d2.getUTCDate() - 1);
+      const d3 = new Date(today);
+      d3.setUTCDate(d3.getUTCDate() - 3);
+
+      mockRepo.findRecent = async () => [
+        { date: d1, mood: 1, note: null },
+        { date: d2, mood: 2, note: null },
+        { date: d3, mood: 1, note: null },
+      ];
+
+      const result = await service.checkAlert({ userId: 'u1' });
+
+      expect(result.alert).toBe(false);
     });
   });
 });
