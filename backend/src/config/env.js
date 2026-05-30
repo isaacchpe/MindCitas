@@ -19,7 +19,7 @@ for (const key of required) {
 }
 
 export const config = {
-  port: parseInt(process.env.PORT, 10),
+  port: Number.parseInt(process.env.PORT, 10),
   nodeEnv: process.env.NODE_ENV,
   mongodbUri: process.env.MONGODB_URI,
   jwt: {

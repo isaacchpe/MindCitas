@@ -17,15 +17,15 @@ function validateField(name, value) {
       return 'El correo es obligatorio';
     }
     if (!EMAIL_RE.test(value)) {
-      return 'El correo no es valido';
+      return 'El correo no es válido';
     }
   }
   if (name === 'password') {
     if (!value) {
-      return 'La contrasena es obligatoria';
+      return 'La contraseña es obligatoria';
     }
     if (value.length < 8) {
-      return 'Minimo 8 caracteres';
+      return 'Mínimo 8 caracteres';
     }
   }
   return '';
@@ -76,18 +76,18 @@ export default function LoginPage() {
       setSession(data.data);
       navigate('/app/dashboard');
     } catch (err) {
-      toast('error', err.response?.data?.message || 'Credenciales invalidas');
+      toast('error', err.response?.data?.message || 'Credenciales inválidas');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <AuthLayout title="Iniciar sesion" subtitle="Bienvenido de vuelta a MindCitas">
+    <AuthLayout title="Iniciar sesión" subtitle="Bienvenido de vuelta a MindCitas">
       <FormCard>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
           <TextField
-            label="Correo electronico"
+            label="Correo electrónico"
             name="email"
             type="email"
             value={form.email}
@@ -100,7 +100,7 @@ export default function LoginPage() {
             required
           />
           <TextField
-            label="Contrasena"
+            label="Contraseña"
             name="password"
             type="password"
             value={form.password}
@@ -112,17 +112,17 @@ export default function LoginPage() {
           />
           <div className="flex justify-end -mt-1">
             <Button variant="ghost" size="sm" onClick={() => navigate('/forgot-password')}>
-              Olvidaste tu contrasena?
+              ¿Olvidaste tu contraseña?
             </Button>
           </div>
           <Button type="submit" fullWidth loading={loading}>
-            Iniciar sesion
+            Iniciar sesión
           </Button>
           <div className="border-t border-surface-border my-2" />
           <p className="text-center text-caption text-text-secondary">
-            No tienes cuenta?{' '}
+            ¿No tienes cuenta?{' '}
             <Button variant="ghost" size="sm" onClick={() => navigate('/register')}>
-              Registrate
+              Regístrate
             </Button>
           </p>
         </form>

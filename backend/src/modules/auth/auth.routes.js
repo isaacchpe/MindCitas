@@ -23,7 +23,7 @@ const loginLimiter = rateLimit({
   legacyHeaders: false,
   message: {
     status: 'error',
-    message: 'Demasiados intentos de inicio de sesion, intenta de nuevo mas tarde',
+    message: 'Demasiados intentos de inicio de sesión, intenta de nuevo más tarde',
   },
 });
 
@@ -45,7 +45,7 @@ const router = Router();
  *             properties:
  *               name:
  *                 type: string
- *                 example: Juan Perez
+ *                 example: Juan Pérez
  *               email:
  *                 type: string
  *                 example: juan@universidad.edu.co
@@ -54,7 +54,7 @@ const router = Router();
  *                 example: password123
  *               academicProgram:
  *                 type: string
- *                 example: Ingenieria de Sistemas
+ *                 example: Ingeniería de Sistemas
  *     responses:
  *       201:
  *         description: Usuario registrado
@@ -69,7 +69,7 @@ const router = Router();
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       400:
- *         description: Error de validacion
+ *         description: Error de validación
  */
 router.post('/register', registerValidator, validate, controller.register);
 
@@ -78,7 +78,7 @@ router.post('/register', registerValidator, validate, controller.register);
  * /auth/login:
  *   post:
  *     tags: [Auth]
- *     summary: Inicia sesion
+ *     summary: Inicia sesión
  *     description: Rate limit de 10 solicitudes por 15 minutos por IP
  *     requestBody:
  *       required: true
@@ -96,13 +96,13 @@ router.post('/register', registerValidator, validate, controller.register);
  *                 example: password123
  *     responses:
  *       200:
- *         description: Sesion iniciada
+ *         description: Sesión iniciada
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/AuthResponse'
  *       401:
- *         description: Credenciales invalidas
+ *         description: Credenciales inválidas
  *       429:
  *         description: Demasiados intentos
  */
@@ -141,7 +141,7 @@ router.post('/login', loginLimiter, loginValidator, validate, controller.login);
  *                     accessToken:
  *                       type: string
  *       401:
- *         description: Refresh token invalido o expirado
+ *         description: Refresh token inválido o expirado
  */
 router.post('/refresh', refreshValidator, validate, controller.refresh);
 
@@ -150,10 +150,10 @@ router.post('/refresh', refreshValidator, validate, controller.refresh);
  * /auth/logout:
  *   post:
  *     tags: [Auth]
- *     summary: Cierra la sesion del usuario
+ *     summary: Cierra la sesión del usuario
  *     responses:
  *       200:
- *         description: Sesion cerrada
+ *         description: Sesión cerrada
  */
 router.post('/logout', controller.logout);
 
@@ -162,7 +162,7 @@ router.post('/logout', controller.logout);
  * /auth/forgot-password:
  *   post:
  *     tags: [Auth]
- *     summary: Solicita un token de recuperacion de contrasena
+ *     summary: Solicita un token de recuperación de contraseña
  *     requestBody:
  *       required: true
  *       content:
@@ -176,7 +176,7 @@ router.post('/logout', controller.logout);
  *                 example: juan@universidad.edu.co
  *     responses:
  *       200:
- *         description: Token de recuperacion generado
+ *         description: Token de recuperación generado
  *         content:
  *           application/json:
  *             schema:
@@ -200,7 +200,7 @@ router.post('/forgot-password', forgotPasswordValidator, validate, controller.fo
  * /auth/reset-password:
  *   post:
  *     tags: [Auth]
- *     summary: Restablece la contrasena con un token valido
+ *     summary: Restablece la contraseña con un token válido
  *     requestBody:
  *       required: true
  *       content:
@@ -216,9 +216,9 @@ router.post('/forgot-password', forgotPasswordValidator, validate, controller.fo
  *                 example: nuevaPassword123
  *     responses:
  *       200:
- *         description: Contrasena actualizada
+ *         description: Contraseña actualizada
  *       400:
- *         description: Token invalido o usuario no encontrado
+ *         description: Token inválido o usuario no encontrado
  */
 router.post('/reset-password', resetPasswordValidator, validate, controller.resetPassword);
 

@@ -26,7 +26,7 @@ export default function ForgotPasswordPage() {
       return;
     }
     if (!EMAIL_RE.test(email)) {
-      setError('El correo no es valido');
+      setError('El correo no es válido');
       return;
     }
 
@@ -47,11 +47,11 @@ export default function ForgotPasswordPage() {
         {sent ? (
           <div className="flex flex-col gap-4 text-center">
             <p className="text-body text-text-primary">
-              Si el correo esta registrado, recibiras un enlace para restablecer tu contrasena en
-              los proximos minutos.
+              Si el correo está registrado, recibirás un enlace para restablecer tu contraseña en
+              los próximos minutos.
             </p>
             <Button fullWidth onClick={() => navigate('/login')}>
-              Volver a iniciar sesion
+              Volver a iniciar sesión
             </Button>
           </div>
         ) : (
@@ -60,14 +60,14 @@ export default function ForgotPasswordPage() {
               <div className="w-16 h-16 rounded-full bg-brand-primary/10 flex items-center justify-center mb-4">
                 <div className="w-8 h-8 rounded-full bg-brand-primary/30" />
               </div>
-              <h3 className="text-h3 text-text-primary">Recuperar contrasena</h3>
+              <h3 className="text-h3 text-text-primary">Recuperar contraseña</h3>
               <p className="text-body text-text-secondary mt-1 text-center">
                 Ingresa tu correo y te enviamos un enlace
               </p>
             </div>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
               <TextField
-                label="Correo electronico"
+                label="Correo electrónico"
                 name="email"
                 type="email"
                 value={email}
@@ -81,7 +81,7 @@ export default function ForgotPasswordPage() {
                   if (!email) {
                     setError('El correo es obligatorio');
                   } else if (!EMAIL_RE.test(email)) {
-                    setError('El correo no es valido');
+                    setError('El correo no es válido');
                   }
                 }}
                 placeholder="correo@ejemplo.com"
@@ -92,11 +92,11 @@ export default function ForgotPasswordPage() {
               />
               <div className="text-center">
                 <Button variant="ghost" size="sm" onClick={() => navigate('/login')}>
-                  Volver a iniciar sesion
+                  Volver a iniciar sesión
                 </Button>
               </div>
               <Button type="submit" fullWidth loading={loading}>
-                Enviar enlace de recuperacion
+                Enviar enlace de recuperación
               </Button>
             </form>
           </>

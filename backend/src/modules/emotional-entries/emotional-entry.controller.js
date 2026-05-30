@@ -28,7 +28,7 @@ export class EmotionalEntryController {
   });
 
   recent = asyncHandler(async (req, res) => {
-    const limit = parseInt(req.query.limit, 10) || 7;
+    const limit = Number.parseInt(req.query.limit, 10) || 7;
     const entries = await this.entryService.getRecentEntries({
       userId: req.user.id,
       limit,

@@ -12,18 +12,18 @@ export const registerValidator = [
     .notEmpty()
     .withMessage('El email es obligatorio')
     .isEmail()
-    .withMessage('El email no es valido')
+    .withMessage('El email no es válido')
     .normalizeEmail(),
   body('password')
     .notEmpty()
-    .withMessage('La contrasena es obligatoria')
+    .withMessage('La contraseña es obligatoria')
     .isLength({ min: 8 })
-    .withMessage('La contrasena debe tener al menos 8 caracteres'),
+    .withMessage('La contraseña debe tener al menos 8 caracteres'),
   body('academicProgram')
     .optional()
     .trim()
     .isLength({ max: 120 })
-    .withMessage('El programa academico no puede exceder 120 caracteres'),
+    .withMessage('El programa académico no puede exceder 120 caracteres'),
 ];
 
 export const loginValidator = [
@@ -32,9 +32,9 @@ export const loginValidator = [
     .notEmpty()
     .withMessage('El email es obligatorio')
     .isEmail()
-    .withMessage('El email no es valido')
+    .withMessage('El email no es válido')
     .normalizeEmail(),
-  body('password').notEmpty().withMessage('La contrasena es obligatoria'),
+  body('password').notEmpty().withMessage('La contraseña es obligatoria'),
 ];
 
 export const refreshValidator = [
@@ -47,7 +47,7 @@ export const forgotPasswordValidator = [
     .notEmpty()
     .withMessage('El email es obligatorio')
     .isEmail()
-    .withMessage('El email no es valido')
+    .withMessage('El email no es válido')
     .normalizeEmail(),
 ];
 
@@ -55,7 +55,7 @@ export const resetPasswordValidator = [
   body('token').notEmpty().withMessage('El token es obligatorio'),
   body('newPassword')
     .notEmpty()
-    .withMessage('La nueva contrasena es obligatoria')
+    .withMessage('La nueva contraseña es obligatoria')
     .isLength({ min: 8 })
-    .withMessage('La contrasena debe tener al menos 8 caracteres'),
+    .withMessage('La contraseña debe tener al menos 8 caracteres'),
 ];

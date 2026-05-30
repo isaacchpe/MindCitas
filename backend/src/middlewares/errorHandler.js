@@ -3,14 +3,14 @@ import { logger } from '../config/logger.js';
 
 const handleValidationError = (err) => ({
   statusCode: 400,
-  message: `Error de validacion: ${Object.values(err.errors)
+  message: `Error de validación: ${Object.values(err.errors)
     .map((e) => e.message)
     .join(', ')}`,
 });
 
 const handleCastError = (err) => ({
   statusCode: 400,
-  message: `Valor invalido para ${err.path}: ${err.value}`,
+  message: `Valor inválido para ${err.path}: ${err.value}`,
 });
 
 const handleDuplicateKey = (err) => {
@@ -23,7 +23,7 @@ const handleDuplicateKey = (err) => {
 
 const handleJwtError = () => ({
   statusCode: 401,
-  message: 'Token invalido',
+  message: 'Token inválido',
 });
 
 const handleJwtExpired = () => ({

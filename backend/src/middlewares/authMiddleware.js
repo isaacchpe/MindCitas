@@ -5,7 +5,7 @@ import { AppError } from '../utils/AppError.js';
 export const authMiddleware = (req, _res, next) => {
   const header = req.headers.authorization;
 
-  if (!header || !header.startsWith('Bearer ')) {
+  if (!header?.startsWith('Bearer ')) {
     throw new AppError('Acceso no autorizado', 401);
   }
 

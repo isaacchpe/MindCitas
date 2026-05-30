@@ -8,17 +8,16 @@ export function LogoutModal({ open, onConfirm, onCancel }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-      <div
-        className="bg-surface-card rounded-lg shadow-elevated p-6 w-full max-w-sm text-center"
-        role="dialog"
-        aria-modal="true"
+      <dialog
+        open
+        className="bg-surface-card rounded-lg shadow-elevated p-6 w-full max-w-sm text-center border-none block static"
       >
         <div className="w-12 h-12 rounded-full bg-feedback-error/10 flex items-center justify-center mx-auto mb-4">
           <AlertCircle className="w-6 h-6 text-feedback-error" />
         </div>
-        <h3 className="text-h3 text-text-primary mb-2">Cerrar sesion</h3>
+        <h3 className="text-h3 text-text-primary mb-2">Cerrar sesión</h3>
         <p className="text-body text-text-secondary mb-6">
-          Estas seguro de que deseas salir de tu cuenta? Tendras que iniciar sesion de nuevo.
+          ¿Estás seguro de que deseas salir de tu cuenta? Tendrás que iniciar sesión de nuevo.
         </p>
         <button
           onClick={onConfirm}
@@ -32,7 +31,7 @@ export function LogoutModal({ open, onConfirm, onCancel }) {
         >
           Cancelar
         </button>
-      </div>
+      </dialog>
     </div>
   );
 }

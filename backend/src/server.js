@@ -12,7 +12,9 @@ const start = async () => {
   });
 };
 
-start().catch((err) => {
+try {
+  await start();
+} catch (err) {
   logger.error('Error al iniciar el servidor:', err);
   process.exit(1);
-});
+}

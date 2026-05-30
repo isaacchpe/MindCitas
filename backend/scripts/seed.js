@@ -33,11 +33,11 @@ const User = mongoose.model('User', userSchema);
 const EmotionalEntry = mongoose.model('EmotionalEntry', entrySchema);
 
 const NOTES = [
-  'Dia tranquilo, pude concentrarme bien.',
-  'Me senti algo agotado despues del parcial.',
-  'Buen dia, comparti con amigos en la tarde.',
+  'Día tranquilo, pude concentrarme bien.',
+  'Me sentí algo agotado después del parcial.',
+  'Buen día, compartí con amigos en la tarde.',
   null,
-  'Mucho estres con las entregas.',
+  'Mucho estrés con las entregas.',
   null,
   'Fin de semana relajado.',
 ];
@@ -54,7 +54,7 @@ async function seed() {
       name: 'Usuario Demo',
       email: 'demo@mindcitas.local',
       password,
-      academicProgram: 'Ingenieria de Software',
+      academicProgram: 'Ingeniería de Software',
     },
     { upsert: true, new: true }
   );
@@ -96,7 +96,9 @@ async function seed() {
   console.log('Seed completado');
 }
 
-seed().catch((err) => {
+try {
+  await seed();
+} catch (err) {
   console.error('Error en seed:', err);
   process.exit(1);
-});
+}
